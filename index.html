@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.1.2/math.min.js"></script>
+        <script src="compiler.js"></script>
+        <script>
+let code = `
+    events {
+    eventName1[parameter]
+    eventName2[parameter]
+    eventName3
+    }
+
+    object objectName1 (parameter1, parameter2) {
+        eventName2[parameter2]
+        when eventName1[parameter1] {
+        }
+        eventName3('parameter1', 'parameter2')
+    }
+
+    object objectName2 {
+        when eventName3 (parameter1,parameter2) and eventName1[123] (parameter2) {
+
+        }
+    }
+
+    use objectName1 (parameter1, parameter2)
+`;
+
+        compile(code);
+        </script>
+    </head>
+    <body></body>
+</html>
