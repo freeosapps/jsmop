@@ -515,19 +515,31 @@ function compile(code) {
             matchEventName();
         } while(token.type != TOKEN_TYPES.OPEN_BRACKETS && token.type != TOKEN_TYPES.OPEN_PARENTHESIS);                
         if (token.type == TOKEN_TYPES.OPEN_PARENTHESIS) {
+            generateOutputCode('(');
             matchParameters();
+            generateOutputCode('=>{');
+        } else {
+            generateOutputCode('(()=>{');
         }
+        let totalAnds = 0;
         while(token.type != TOKEN_TYPES.OPEN_BRACKETS) {
             tokenMatch(TOKEN_TYPES.AND);
             do {
                 matchEventName();
             } while(token.type != TOKEN_TYPES.OPEN_BRACKETS && token.type != TOKEN_TYPES.OPEN_PARENTHESIS);
             if (token.type == TOKEN_TYPES.OPEN_PARENTHESIS) {
+                generateOutputCode('(');
                 matchParameters();
+                generateOutputCode('=>{');
             }
+            totalAnds++;
+        }
+        for (let i = 0; i < totalAnds; i++) {
+            generateOutputCode('});');
         }
         tokenMatch(TOKEN_TYPES.OPEN_BRACKETS);
         tokenMatch(TOKEN_TYPES.CLOSE_BRACKETS);
+        generateOutputCode('});');
     }
 
     function matchObjectParameters() {
@@ -562,18 +574,22 @@ function compile(code) {
 
     function matchUse() {
         tokenMatch(TOKEN_TYPES.USE);
-        tokenMatch(TOKEN_TYPES.NAME);
+        generateOutputCode(`useObject('${token.value}'`);
+        tokenMatch(TOKEN_TYPES.NAME);        
         if (token.type == TOKEN_TYPES.OPEN_PARENTHESIS) {
             tokenMatch(TOKEN_TYPES.OPEN_PARENTHESIS);
+            generateOutputCode(`,'${token.value}'`);
             tokenMatch(TOKEN_TYPES.NAME);                    
             do {
                 if (token.type == TOKEN_TYPES.COMMA) {
                     tokenMatch(TOKEN_TYPES.COMMA);
+                    generateOutputCode(`,'${token.value}'`);
                     tokenMatch(TOKEN_TYPES.NAME);                        
                 }
             } while(token.type != TOKEN_TYPES.CLOSE_PARENTHESIS);
             tokenMatch(TOKEN_TYPES.CLOSE_PARENTHESIS);
         }
+        generateOutputCode(');');
     }
 
     console.log(outputCode);

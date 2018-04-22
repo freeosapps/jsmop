@@ -13,17 +13,18 @@ let code = `
     object objectName1 (parameter1, parameter2) {
         eventName2[parameter2]
         when eventName1[parameter1] {
+            eventName2[parameter2]
         }
         eventName3('parameter1', 'parameter2')
     }
 
     object objectName2 {
         when eventName3 (parameter1,parameter2) and eventName1[123] (parameter2) {
-
+            eventName3('parameter1', 'parameter2')
         }
     }
 
-    use objectName1 (parameter1, parameter2)
+    use objectName1 (parameter, parameter)
 `;
 
         compile(code);
