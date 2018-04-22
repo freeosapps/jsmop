@@ -534,10 +534,19 @@ function compile(code) {
             }
             totalAnds++;
         }
+        tokenMatch(TOKEN_TYPES.OPEN_BRACKETS);
+        while (token.type == TOKEN_TYPES.NAME) {
+            matchEventName();
+            if (token.type == TOKEN_TYPES.OPEN_PARENTHESIS) {
+                matchParameters();
+            } else {
+                generateOutputCode('()');
+            }
+            generateOutputCode(';');
+        }
         for (let i = 0; i < totalAnds; i++) {
             generateOutputCode('});');
         }
-        tokenMatch(TOKEN_TYPES.OPEN_BRACKETS);
         tokenMatch(TOKEN_TYPES.CLOSE_BRACKETS);
         generateOutputCode('});');
     }
